@@ -31,22 +31,27 @@ class Neuron:
         o0 = self.sigmoid(self, self.w4 * h0 + self.w5 * h1 + self.b2)
         return o0
 
+    def fsum_o0(self, x):
+        h0 = self.sigmoid(self, self.w0*x[0]+self.w1*x[1]+self.b0)
+        h1 = self.sigmoid(self, self.w2 * x[0] + self.w3 * x[1] + self.b1)
+        return (self.w4 * h0 + self.w5 * h1 + self.b2)
+
     def train(self, data, ypred, q, epochs):
         result = [0, 0, 0, 0]
         for j in range(0, epochs):
             for i in range (0,4):
                 result[i] = self.feedforward(self, data[i])
-                if j%10 == 0:
-                    print(i, ": ", result[i])
+                sum_o0 = self.fsum_o0(self, data[i])
+
                 mse = self.mse_loss(self, result[i], ypred[i])
                 deriv_mse = self.derivmse_loss(self, result[i], ypred[i])
                 
                 # POCHODNA NIE IDZIE Z RESULT TYLKO POWINIENES SOBIE SUME POLICZYC I JA ZAPAMIETAC I POCHODNA IDZIE Z SUMY NP. Z w5*h1 + w6*h2 +b3, A TY ROBISZ Z WARTOSCI WZMOCNIONEJ FUNKCJA AKTYWACJI
-                dw5 = (self.w2 * data[i][0] + self.w3 * data[i][1] + self.b1) * self.derivsigmoid(self, result[i])
-                dw4 = (self.w0 * data[i][0] + self.w1 * data[i][1] + self.b0) * self.derivsigmoid(self, result[i])
-                db2 = self.derivsigmoid(self, result[i])
-                dh0 = dw4 * self.derivsigmoid(self, result[i])
-                dh1 = dw5 * self.derivsigmoid(self, result[i])
+                dw5 = (self.w2 * data[i][0] + self.w3 * data[i][1] + self.b1) * self.derivsigmoid(self, sum_o0)
+                dw4 = (self.w0 * data[i][0] + self.w1 * data[i][1] + self.b0) * self.derivsigmoid(self, sum_o0)
+                db2 = self.derivsigmoid(self, sum_o0)
+                dh0 = dw4 * self.derivsigmoid(self, sum_o0)
+                dh1 = dw5 * self.derivsigmoid(self, sum_o0)
                 
                 #TUTAJ DOBRZE POCHODNA Z SUMY WAZONEJ
                 dw0 = self.derivsigmoid(self, self.w0 * data[i][0] + self.w1 * data[i][1] + self.b0) * data[i][0]
@@ -66,8 +71,8 @@ class Neuron:
                 self.w5 -= q*dw5*deriv_mse
                 self.b2 -= q*db2*deriv_mse
 
-                ##if j%10 == 0:
-                    ##print(i," : ", result[i])
+                if j%10 == 0:
+                    print(i," : ", result[i])
 
 
 
