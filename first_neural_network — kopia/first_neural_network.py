@@ -40,12 +40,15 @@ class Neuron:
                     print(i, ": ", result[i])
                 mse = self.mse_loss(self, result[i], ypred[i])
                 deriv_mse = self.derivmse_loss(self, result[i], ypred[i])
-
+                
+                # POCHODNA NIE IDZIE Z RESULT TYLKO POWINIENES SOBIE SUME POLICZYC I JA ZAPAMIETAC I POCHODNA IDZIE Z SUMY NP. Z w5*h1 + w6*h2 +b3, A TY ROBISZ Z WARTOSCI WZMOCNIONEJ FUNKCJA AKTYWACJI
                 dw5 = (self.w2 * data[i][0] + self.w3 * data[i][1] + self.b1) * self.derivsigmoid(self, result[i])
                 dw4 = (self.w0 * data[i][0] + self.w1 * data[i][1] + self.b0) * self.derivsigmoid(self, result[i])
                 db2 = self.derivsigmoid(self, result[i])
                 dh0 = dw4 * self.derivsigmoid(self, result[i])
                 dh1 = dw5 * self.derivsigmoid(self, result[i])
+                
+                #TUTAJ DOBRZE POCHODNA Z SUMY WAZONEJ
                 dw0 = self.derivsigmoid(self, self.w0 * data[i][0] + self.w1 * data[i][1] + self.b0) * data[i][0]
                 dw1 = self.derivsigmoid(self, self.w0 * data[i][0] + self.w1 * data[i][1] + self.b0) * data[i][1]
                 dw2 = self.derivsigmoid(self, self.w2 * data[i][0] + self.w3 * data[i][1] + self.b1) * data[i][0]
