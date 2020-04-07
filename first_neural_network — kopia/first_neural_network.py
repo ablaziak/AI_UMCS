@@ -67,8 +67,8 @@ class Neuron:
                 dw4 = h0 * self.derivsigmoid(self, sum_o0)
                 db2 = self.derivsigmoid(self, sum_o0)
 
-                dh0 = dw4 * self.derivsigmoid(self, sum_o0)
-                dh1 = dw5 * self.derivsigmoid(self, sum_o0)
+                dh0 = self.w4 * self.derivsigmoid(self, sum_o0)
+                dh1 = self.w5 * self.derivsigmoid(self, sum_o0)
 
                 dw0 = self.derivsigmoid(self, sum_h0) * data[i][0]
                 dw1 = self.derivsigmoid(self, sum_h0) * data[i][1]
@@ -89,9 +89,9 @@ class Neuron:
                 self.w4 -= learn_rate * dw4 * deriv_mse
                 self.w5 -= learn_rate * dw5 * deriv_mse
                 self.b2 -= learn_rate * db2 * deriv_mse
-
-                result[i] = self.feedforward(self, data[i])
-                loss[i] = self.mse(self, target_value[i], result[i])
+                if j%10 == 0:
+                    result[i] = self.feedforward(self, data[i])
+                    loss[i] = self.mse(self, target_value[i], result[i])
             if  j%10==0:
                 print("epoch: ", j)
                 self.printall(self, data, result, loss)
